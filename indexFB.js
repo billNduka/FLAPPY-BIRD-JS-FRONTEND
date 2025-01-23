@@ -11,7 +11,7 @@ beginBtn.addEventListener("click", begin)
 canvas.height = 600
 canvas.width = 600
 let isJumping = false
-let gravity = 0.6
+const gravity = 0.6
 
 
 
@@ -20,7 +20,7 @@ let gravity = 0.6
 let faby = 
 {
     //Faby's spawn position
-    y: 0,
+    y: 1,
     x: canvas.width * 0.1,
     fallSpeed: 0,
     //Faby's Size
@@ -39,12 +39,13 @@ let faby =
     {
         this.fallSpeed += change
     },
-    jumpSpeed: 120,  
+    jumpSpeed: 45,  
+    targetY: null,
 }
 
 //Jump trigger, using a button for now
+document.addEventListener("keydown", jump)
 //jumpBtn.addEventListener("click", jump)
-
 
 //function to clear and prepare canvas
 function initializeCanvas()
@@ -56,38 +57,45 @@ function initializeCanvas()
 
 
 //jump function
-function jump()
+function jump(e)
 {
-    isJumping = true
-    let targetY = faby.y - faby.height * 4
-    function loop()
+    if(e.code == "Space" && !isJumping)
     {
-        if(faby.y > 0)
-        {
-            faby.y -= 6
-            initializeCanvas();
-            drawFaby();
-            jumpAnim = requestAnimationFrame(loop)
-        } else if(faby.y <= 0)
-        {
-            isJumping = false
-            return;
-        }
-        if(faby.y <= targetY)
-        {
-            cancelAnimationFrame(jumpAnim)
-            isJumping = false
-        }
+        isJumping = true
+        faby.fallSpeed = 0
+        faby.targetY = faby.y - faby.jumpSpeed * 6
     }
-    loop()
-
+    
 }
+// function jump()
+// {
+    
+//         isJumping = true
+//         faby.fallSpeed = 0
+//         faby.targetY = faby.y - faby.jumpSpeed * 6
+    
+// }
 
 
 //Function to update faby's position including gravity
 function updateFaby() {
-    // If not below the canvas and not jumping
-    if (!(faby.y + faby.height >= canvas.height) && !isJumping) {
+    if(isJumping)
+    {
+        if (faby.y  <= 0) 
+        {
+            faby.y = 0;
+            isJumping = false
+            faby.fallSpeed = 0; // Reset fall speed when hitting the ground
+        } else if (faby.y >= faby.targetY)
+        {
+            faby.y -= faby.jumpSpeed / 3
+        } else
+        {
+            isJumping = false
+            faby.fallSpeed = 0;
+        }
+    } else if (!(faby.y + faby.height >= canvas.height) && !isJumping) 
+    {
         // Update fall speed incrementally
         faby.fallSpeed += gravity;
 
@@ -99,7 +107,8 @@ function updateFaby() {
             faby.y = canvas.height - faby.height;
             faby.fallSpeed = 0; // Reset fall speed when hitting the ground
         }
-    } else {
+    }
+    else {
         faby.y = canvas.height - faby.height; // Ensure bird stays on the ground
         faby.fallSpeed = 0;
     }
@@ -125,7 +134,7 @@ function begin()
         updateFaby()
         drawFaby();
 
-        //console.log("1 loop")
+        
         requestAnimationFrame(gameLoop)
     }
     gameLoop();
