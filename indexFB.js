@@ -59,23 +59,17 @@ function initializeCanvas()
 //jump function
 function jump(e)
 {
-    if(e.code == "Space" && !isJumping)
+    if(e.key == "a" && isJumping == false)
     {
         isJumping = true
         faby.fallSpeed = 0
-        faby.targetY = faby.y - faby.jumpSpeed * 6
-    }
-    
+        if(faby.targetY == null)
+        {
+            faby.targetY = Math.max(faby.y - faby.jumpSpeed * 6, 0)
+        }
+        console.log("fall speed = " + faby.fallSpeed, "targetY = " +faby.targetY, "Y position = " +faby.y, "Gravity = " +gravity)
+    }   
 }
-// function jump()
-// {
-    
-//         isJumping = true
-//         faby.fallSpeed = 0
-//         faby.targetY = faby.y - faby.jumpSpeed * 6
-    
-// }
-
 
 //Function to update faby's position including gravity
 function updateFaby() {
@@ -85,16 +79,19 @@ function updateFaby() {
         {
             faby.y = 0;
             isJumping = false
+            faby.targetY = null
             faby.fallSpeed = 0; // Reset fall speed when hitting the ground
-        } else if (faby.y >= faby.targetY)
+        } else if (faby.y > faby.targetY)
         {
             faby.y -= faby.jumpSpeed / 3
         } else
         {
             isJumping = false
             faby.fallSpeed = 0;
+            faby.targetY = null
+            console.log("fall speed = " + faby.fallSpeed, "targetY = " +faby.targetY, "Y position = " +faby.y, "Gravity = " +gravity)
         }
-    } else if (!(faby.y + faby.height >= canvas.height) && !isJumping) 
+    } else if (faby.y + faby.height < canvas.height) 
     {
         // Update fall speed incrementally
         faby.fallSpeed += gravity;
@@ -108,10 +105,10 @@ function updateFaby() {
             faby.fallSpeed = 0; // Reset fall speed when hitting the ground
         }
     }
-    else {
-        faby.y = canvas.height - faby.height; // Ensure bird stays on the ground
-        faby.fallSpeed = 0;
-    }
+    // else {
+    //     faby.y = canvas.height - faby.height; // Ensure bird stays on the ground
+    //     faby.fallSpeed = 0;
+    // }
 }
 
 
@@ -127,7 +124,7 @@ function drawFaby()
 //game loop; Update, draw and loop
 function begin()
 {
-    
+   
     function gameLoop()
     {
         initializeCanvas();
@@ -140,3 +137,5 @@ function begin()
     gameLoop();
     
 }
+
+
