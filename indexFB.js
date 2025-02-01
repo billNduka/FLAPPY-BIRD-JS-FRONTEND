@@ -14,8 +14,6 @@ let isJumping = false
 const gravity = 0.6
 
 
-
-
 //bird object
 let faby = 
 {
@@ -41,6 +39,35 @@ let faby =
     },
     jumpSpeed: 45,  
     targetY: null,
+}
+
+//Pipe object
+class pipes
+{
+    constructor(x, height, interval, width)
+    {
+        this.x = x
+        this.height = height
+        this.interval = interval
+        this.width = width
+    }
+    drawPipe()
+    {
+        context.fillStyle = "#42f560"
+        //top and bottom pipes
+        context.fillRect(this.x, 0, this.width, canvas.height - this.height - this.interval)
+        context.fillRect(this.x, canvas.height - this.height, this.width, this.height)   
+    }
+    updatePipe()
+    {
+        let speed = 6
+        this.x -= speed
+        if(this.x <= 0)
+        { 
+            this.x += 602
+            this.height = Math.random() * 450 + 30
+        }
+    }
 }
 
 //Jump trigger, using a button for now
@@ -72,7 +99,8 @@ function jump(e)
 }
 
 //Function to update faby's position including gravity
-function updateFaby() {
+function updateFaby() 
+{
     if(isJumping)
     {
         if (faby.y  <= 0) 
@@ -112,7 +140,6 @@ function updateFaby() {
 }
 
 
-
 //self explanatory
 function drawFaby()
 {
@@ -120,7 +147,8 @@ function drawFaby()
     context.fillRect(faby.x, faby.y, faby.width, faby.height)
 }
 
-
+let pipe1 = new pipes(605, Math.random() * 450 + 45, 120, 50)
+let pipe2 = new pipes(605 + 300, Math.random() * 450 + 45, 120, 50)
 //game loop; Update, draw and loop
 function begin()
 {
@@ -128,9 +156,12 @@ function begin()
     function gameLoop()
     {
         initializeCanvas();
-        updateFaby()
+        updateFaby();
+        pipe1.updatePipe()
+        pipe2.updatePipe()
         drawFaby();
-
+        pipe1.drawPipe()
+        pipe2.drawPipe()
         
         requestAnimationFrame(gameLoop)
     }
