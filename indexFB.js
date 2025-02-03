@@ -58,6 +58,7 @@ class pipes
         context.fillRect(this.x, 0, this.width, canvas.height - this.height - this.interval)
         context.fillRect(this.x, canvas.height - this.height, this.width, this.height)   
     }
+    
     updatePipe()
     {
         let speed = 3
