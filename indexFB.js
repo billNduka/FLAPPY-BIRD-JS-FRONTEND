@@ -8,10 +8,10 @@ const jumpBtn = document.getElementById("jumpbtn")
 beginBtn.addEventListener("click", begin)
 
 //Setting the canvas size
-canvas.height = 600
+canvas.height = 700
 canvas.width = 600
 let isJumping = false
-const gravity = 0.6
+const gravity = 0.8
 
 
 //bird object
@@ -22,8 +22,8 @@ let faby =
     x: canvas.width * 0.1,
     fallSpeed: 0,
     //Faby's Size
-    width: 60,
-    height: 60,
+    width: 25,
+    height: 25,
     //Update position and speed
     set updateX(change)
     {
@@ -37,7 +37,7 @@ let faby =
     {
         this.fallSpeed += change
     },
-    jumpSpeed: 45,  
+    jumpSpeed: 25,  
     targetY: null,
 }
 
@@ -60,11 +60,11 @@ class pipes
     }
     updatePipe()
     {
-        let speed = 6
+        let speed = 3
         this.x -= speed
-        if(this.x <= 0)
+        if(this.x <= -50)
         { 
-            this.x += 602
+            this.x += 250 + 250 + 250
             this.height = Math.random() * 450 + 30
         }
     }
@@ -72,7 +72,7 @@ class pipes
 
 //Jump trigger, using a button for now
 document.addEventListener("keydown", jump)
-//jumpBtn.addEventListener("click", jump)
+
 
 //function to clear and prepare canvas
 function initializeCanvas()
@@ -128,15 +128,12 @@ function updateFaby()
         faby.y += faby.fallSpeed;
 
         // Prevent the bird from overshooting the bottom of the canvas
-        if (faby.y + faby.height > canvas.height) {
+        if (faby.y + faby.height > canvas.height) 
+        {
             faby.y = canvas.height - faby.height;
             faby.fallSpeed = 0; // Reset fall speed when hitting the ground
         }
     }
-    // else {
-    //     faby.y = canvas.height - faby.height; // Ensure bird stays on the ground
-    //     faby.fallSpeed = 0;
-    // }
 }
 
 
@@ -147,8 +144,19 @@ function drawFaby()
     context.fillRect(faby.x, faby.y, faby.width, faby.height)
 }
 
-let pipe1 = new pipes(605, Math.random() * 450 + 45, 120, 50)
-let pipe2 = new pipes(605 + 300, Math.random() * 450 + 45, 120, 50)
+//know when game over
+function checkFail() 
+{
+    //check forwards
+    if((faby.x + faby.width <= ((pipe1.x) || (pipe2.x) || (pipe3.x))) && (faby.y <= ((pipe1.height) || (pipe2.height) || (pipe3.height))))
+    {
+        alert("done")
+    }
+}
+
+let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60)
+let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, 175, 60)
+let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, 175, 60)
 //game loop; Update, draw and loop
 function begin()
 {
@@ -159,9 +167,13 @@ function begin()
         updateFaby();
         pipe1.updatePipe()
         pipe2.updatePipe()
+        pipe3.updatePipe()
         drawFaby();
         pipe1.drawPipe()
         pipe2.drawPipe()
+        pipe3.drawPipe()
+        
+
         
         requestAnimationFrame(gameLoop)
     }
