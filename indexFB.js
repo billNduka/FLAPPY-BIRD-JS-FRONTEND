@@ -11,7 +11,7 @@ beginBtn.addEventListener("click", begin)
 canvas.height = 700
 canvas.width = 600
 let isJumping = false
-const gravity = 0.8
+const gravity = 0.08
 
 
 //bird object
@@ -37,7 +37,7 @@ let faby =
     {
         this.fallSpeed += change
     },
-    jumpSpeed: 25,  
+    jumpSpeed: 5,  
     targetY: null,
 }
 
@@ -67,6 +67,22 @@ class pipes
         { 
             this.x += 250 + 250 + 250
             this.height = Math.random() * 450 + 30
+        }
+    }
+    //Resolve problem with this`    
+    checkCollision() 
+    {
+        if 
+        (
+            faby.x + faby.width > this.x &&  // Right side of Faby touches left side of pipe
+            faby.x < this.x + this.width &&  // Left side of Faby touches right side of pipe
+            (
+                faby.y < canvas.height - this.height - this.interval ||  // Hits top pipe
+                faby.y + faby.height > canvas.height - this.height // Hits bottom pipe
+            )
+        ) {
+            alert("Game Over");
+            //location.reload(); // Reload to restart the game
         }
     }
 }
@@ -146,14 +162,7 @@ function drawFaby()
 }
 
 //know when game over
-function checkFail() 
-{
-    //check forwards
-    if((faby.x + faby.width <= ((pipe1.x) || (pipe2.x) || (pipe3.x))) && (faby.y <= ((pipe1.height) || (pipe2.height) || (pipe3.height))))
-    {
-        alert("done")
-    }
-}
+
 
 let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60)
 let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, 175, 60)
@@ -166,20 +175,23 @@ function begin()
     {
         initializeCanvas();
         updateFaby();
+        
         pipe1.updatePipe()
         pipe2.updatePipe()
-        pipe3.updatePipe()
+        pipe3.updatePipe() 
+
         drawFaby();
         pipe1.drawPipe()
         pipe2.drawPipe()
         pipe3.drawPipe()
         
+        pipe1.checkCollision()
+        pipe2.checkCollision()
+        pipe3.checkCollision()
 
-        
         requestAnimationFrame(gameLoop)
     }
-    gameLoop();
-    
+    gameLoop();   
 }
 
 
