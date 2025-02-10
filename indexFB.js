@@ -4,14 +4,15 @@
 const canvas = document.getElementById("canv");
 const context = canvas.getContext("2d");
 const beginBtn = document.getElementById("btn")
-const jumpBtn = document.getElementById("jumpbtn")
 beginBtn.addEventListener("click", begin)
+
 
 //Setting the canvas size
 canvas.height = 700
 canvas.width = 600
 let isJumping = false
-const gravity = 0.08
+let lost = false
+const gravity = 0.6
 
 
 //bird object
@@ -37,7 +38,7 @@ let faby =
     {
         this.fallSpeed += change
     },
-    jumpSpeed: 5,  
+    jumpSpeed: 12,  
     targetY: null,
 }
 
@@ -69,7 +70,6 @@ class pipes
             this.height = Math.random() * 450 + 30
         }
     }
-    //Resolve problem with this`    
     checkCollision() 
     {
         if 
@@ -80,8 +80,10 @@ class pipes
                 faby.y < canvas.height - this.height - this.interval ||  // Hits top pipe
                 faby.y + faby.height > canvas.height - this.height // Hits bottom pipe
             )
-        ) {
-            alert("Game Over");
+        ) 
+        {
+            lost = true
+            //alert("Game Over");
             //location.reload(); // Reload to restart the game
         }
     }
@@ -89,7 +91,7 @@ class pipes
 
 //Jump trigger, using a button for now
 document.addEventListener("keydown", jump)
-
+canvas.addEventListener("click", jump)
 
 //function to clear and prepare canvas
 function initializeCanvas()
@@ -99,11 +101,10 @@ function initializeCanvas()
     context.fillRect(0, 0, canvas.width, canvas.height)   
 }
 
-
 //jump function
 function jump(e)
 {
-    if(e.key == "a" && isJumping == false)
+    if(((e.key == "a") || canvas.click) && isJumping == false)
     {
         isJumping = true
         faby.fallSpeed = 0
@@ -153,7 +154,6 @@ function updateFaby()
     }
 }
 
-
 //self explanatory
 function drawFaby()
 {
@@ -161,35 +161,56 @@ function drawFaby()
     context.fillRect(faby.x, faby.y, faby.width, faby.height)
 }
 
-//know when game over
+//Game over screen
+function gameOverScreen()
+{
+    context.fillStyle = "#ecf542"
+    context.fontFamily = "Exo"
+    context.font = "90px Exo"
+    context.fillText("Game Over", 90, 200)
+}
 
-
-let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60)
-let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, 175, 60)
-let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, 175, 60)
 //game loop; Update, draw and loop
 function begin()
 {
-   
+    let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60)
+    let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, 175, 60)
+    let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, 175, 60)
+
+    faby.y = 1
+    fallSpeed = 0
+    faby.targetY = null
+    isJumping = false
+    lost = false
+
     function gameLoop()
     {
-        initializeCanvas();
-        updateFaby();
-        
-        pipe1.updatePipe()
-        pipe2.updatePipe()
-        pipe3.updatePipe() 
+        if(!lost)
+        {
+            initializeCanvas();
 
-        drawFaby();
-        pipe1.drawPipe()
-        pipe2.drawPipe()
-        pipe3.drawPipe()
-        
-        pipe1.checkCollision()
-        pipe2.checkCollision()
-        pipe3.checkCollision()
+            pipe1.checkCollision()
+            pipe2.checkCollision()
+            pipe3.checkCollision()
 
-        requestAnimationFrame(gameLoop)
+            updateFaby();
+            
+            pipe1.updatePipe()
+            pipe2.updatePipe()
+            pipe3.updatePipe() 
+
+            
+
+            drawFaby();
+            pipe1.drawPipe()
+            pipe2.drawPipe()
+            pipe3.drawPipe()
+            
+            
+
+            requestAnimationFrame(gameLoop)
+        }
+        else gameOverScreen()
     }
     gameLoop();   
 }
