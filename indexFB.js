@@ -4,6 +4,11 @@
 const canvas = document.getElementById("canv");
 const context = canvas.getContext("2d");
 const beginBtn = document.getElementById("btn")
+const fabyPic = document.getElementById("fabyPic")
+const pipeStyle1 = document.getElementById("pipeStyle1")
+const pipeStyle2 = document.getElementById("pipeStyle2")
+const pipeStyle3 = document.getElementById("pipeStyle3")
+const background = document.getElementById("background")
 beginBtn.addEventListener("click", begin)
 
 
@@ -56,8 +61,11 @@ class pipes
     {
         context.fillStyle = "#42f560"
         //top and bottom pipes
-        context.fillRect(this.x, 0, this.width, canvas.height - this.height - this.interval)
-        context.fillRect(this.x, canvas.height - this.height, this.width, this.height)   
+        // context.fillRect(this.x, 0, this.width, canvas.height - this.height - this.interval)
+        // context.fillRect(this.x, canvas.height - this.height, this.width, this.height)   
+
+        context.drawImage(pipeStyle3, this.x, 0, this.width, canvas.height - this.height - this.interval)
+        context.drawImage(pipeStyle3, this.x, canvas.height - this.height, this.width, this.height)   
     }
     
     updatePipe()
@@ -74,7 +82,7 @@ class pipes
     {
         if 
         (
-            faby.x + faby.width > this.x &&  // Right side of Faby touches left side of pipe
+            faby.x + faby.width + 6 > this.x &&  // Right side of Faby touches left side of pipe
             faby.x < this.x + this.width &&  // Left side of Faby touches right side of pipe
             (
                 faby.y < canvas.height - this.height - this.interval ||  // Hits top pipe
@@ -98,7 +106,8 @@ function initializeCanvas()
 {
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.fillStyle = "rgb(52, 177, 182)"
-    context.fillRect(0, 0, canvas.width, canvas.height)   
+    //context.fillRect(0, 0, canvas.width, canvas.height)  
+    context.drawImage(background, 0, 0, canvas.width, canvas.height)  
 }
 
 //jump function
@@ -158,7 +167,8 @@ function updateFaby()
 function drawFaby()
 {
     context.fillStyle = "#ecf542"
-    context.fillRect(faby.x, faby.y, faby.width, faby.height)
+    //context.fillRect(faby.x, faby.y, faby.width, faby.height)
+    context.drawImage(fabyPic, faby.x, faby.y, faby.width, faby.height)
 }
 
 //Game over screen
