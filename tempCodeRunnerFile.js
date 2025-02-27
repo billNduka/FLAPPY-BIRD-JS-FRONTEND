@@ -1,1 +1,0 @@
-context.fillRect(10,10,60,60);

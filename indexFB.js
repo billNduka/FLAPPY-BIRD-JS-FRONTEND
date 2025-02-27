@@ -8,16 +8,21 @@ const fabyPic = document.getElementById("fabyPic")
 const pipeStyle1 = document.getElementById("pipeStyle1")
 const pipeStyle2 = document.getElementById("pipeStyle2")
 const pipeStyle3 = document.getElementById("pipeStyle3")
-const background = document.getElementById("background")
+const background1 = document.getElementById("background")
+const background2 = document.getElementById("background")
 beginBtn.addEventListener("click", begin)
 
 
 //Setting the canvas size
 canvas.height = 700
 canvas.width = 600
+const gravity = 0.6
+const backgroundSpeed = 0.75
 let isJumping = false
 let lost = false
-const gravity = 0.6
+let backgroundPos = [0, canvas.width]
+let score = 0
+
 
 
 //bird object
@@ -50,12 +55,13 @@ let faby =
 //Pipe object
 class pipes
 {
-    constructor(x, height, interval, width)
+    constructor(x, height, interval, width, passed)
     {
         this.x = x
         this.height = height
         this.interval = interval
         this.width = width
+        this.passed = false
     }
     drawPipe()
     {
@@ -64,8 +70,8 @@ class pipes
         // context.fillRect(this.x, 0, this.width, canvas.height - this.height - this.interval)
         // context.fillRect(this.x, canvas.height - this.height, this.width, this.height)   
 
-        context.drawImage(pipeStyle3, this.x, 0, this.width, canvas.height - this.height - this.interval)
-        context.drawImage(pipeStyle3, this.x, canvas.height - this.height, this.width, this.height)   
+        context.drawImage(pipeStyle1, this.x, 0, this.width, canvas.height - this.height - this.interval)
+        context.drawImage(pipeStyle1, this.x, canvas.height - this.height, this.width, this.height)   
     }
     
     updatePipe()
@@ -76,6 +82,7 @@ class pipes
         { 
             this.x += 250 + 250 + 250
             this.height = Math.random() * 450 + 30
+            this.passed = false
         }
     }
     checkCollision() 
@@ -95,6 +102,14 @@ class pipes
             //location.reload(); // Reload to restart the game
         }
     }
+    updateScore()
+    {
+        if (this.x <= faby.x && this.passed == false) 
+        {
+            score ++
+            this.passed = true
+        }
+    }
 }
 
 //Jump trigger, using a button for now
@@ -106,8 +121,11 @@ function initializeCanvas()
 {
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.fillStyle = "rgb(52, 177, 182)"
+
     //context.fillRect(0, 0, canvas.width, canvas.height)  
-    context.drawImage(background, 0, 0, canvas.width, canvas.height)  
+    //context.drawImage(background1, 0, 0, canvas.width, canvas.height)
+    //background outside the canvas
+    //context.drawImage(background2, canvas.width, 0, canvas.width, canvas.height)
 }
 
 //jump function
@@ -163,6 +181,28 @@ function updateFaby()
     }
 }
 
+//Function to cause background to scroll
+function updateBackground()
+{
+    backgroundPos[0] -= backgroundSpeed;
+    backgroundPos[1] -= backgroundSpeed;
+
+    // Reset the first background when it moves out of view
+    if (backgroundPos[0] <= -canvas.width) 
+    {
+        backgroundPos[0] = backgroundPos[1] + canvas.width;
+    }
+
+    // Reset the second background when it moves out of view
+    if (backgroundPos[1] <= -canvas.width) {
+        backgroundPos[1] = backgroundPos[0] + canvas.width;
+    }
+
+    context.drawImage(background1, backgroundPos[0], 0, canvas.width, canvas.height)
+    //background outside the canvas
+    context.drawImage(background2, backgroundPos[1], 0, canvas.width, canvas.height)
+}
+
 //self explanatory
 function drawFaby()
 {
@@ -180,18 +220,28 @@ function gameOverScreen()
     context.fillText("Game Over", 90, 200)
 }
 
+function displayScore()
+{
+    context.fillStyle = "#ecf542"
+    context.fontFamily = "Exo"
+    context.font = "30px Exo"
+    context.fillText(`Score: ${score}`, 10, 40)
+}
+
 //game loop; Update, draw and loop
 function begin()
 {
-    let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60)
-    let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, 175, 60)
-    let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, 175, 60)
+    let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60, false)
+    let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, 175, 60, false)
+    let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, 175, 60, false)
 
     faby.y = 1
     fallSpeed = 0
     faby.targetY = null
     isJumping = false
     lost = false
+    backgroundPos = [0, canvas.width]
+    score = 0
 
     function gameLoop()
     {
@@ -203,7 +253,9 @@ function begin()
             pipe2.checkCollision()
             pipe3.checkCollision()
 
-            updateFaby();
+            updateBackground()
+
+            updateFaby()
             
             pipe1.updatePipe()
             pipe2.updatePipe()
@@ -215,8 +267,12 @@ function begin()
             pipe1.drawPipe()
             pipe2.drawPipe()
             pipe3.drawPipe()
+
+            pipe1.updateScore()
+            pipe2.updateScore()
+            pipe3.updateScore()
             
-            
+            displayScore()
 
             requestAnimationFrame(gameLoop)
         }
