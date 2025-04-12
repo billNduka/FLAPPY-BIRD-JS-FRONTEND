@@ -4,7 +4,11 @@
 const canvas = document.getElementById("canv");
 const context = canvas.getContext("2d");
 const beginBtn = document.getElementById("btn")
-const fabyPic = document.getElementById("fabyPic")
+const faby0 = document.getElementById("faby0")
+const faby1 = document.getElementById("faby1")
+const faby2 = document.getElementById("faby2")
+const faby3 = document.getElementById("faby3")
+const fabySprites = [faby0, faby1, faby2, faby3]
 const pipeStyle1 = document.getElementById("pipeStyle1")
 const pipeStyle2 = document.getElementById("pipeStyle2")
 const pipeStyle3 = document.getElementById("pipeStyle3")
@@ -22,6 +26,7 @@ let isJumping = false
 let lost = false
 let backgroundPos = [0, canvas.width]
 let score = 0
+let currentFaby = fabySprites[0]
 
 
 
@@ -50,6 +55,8 @@ let faby =
     },
     jumpSpeed: 12,  
     targetY: null,
+    spriteIndex: 0,
+    frameCount: 0
 }
 
 //Pipe object
@@ -179,6 +186,14 @@ function updateFaby()
             faby.fallSpeed = 0; // Reset fall speed when hitting the ground
         }
     }
+
+    faby.frameCount++;
+
+    if (faby.frameCount % 10 === 0) 
+    { // change 5 to a higher number to flap slower
+        faby.spriteIndex = (faby.spriteIndex + 1) % fabySprites.length;
+        currentFaby = fabySprites[faby.spriteIndex];
+    }
 }
 
 //Function to cause background to scroll
@@ -208,7 +223,7 @@ function drawFaby()
 {
     context.fillStyle = "#ecf542"
     //context.fillRect(faby.x, faby.y, faby.width, faby.height)
-    context.drawImage(fabyPic, faby.x, faby.y, faby.width, faby.height)
+    context.drawImage(currentFaby, faby.x, faby.y, faby.width, faby.height)
 }
 
 //Game over screen
