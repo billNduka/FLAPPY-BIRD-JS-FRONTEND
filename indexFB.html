@@ -25,19 +25,28 @@
     <img id = "pipeStyle3" src = "imageAssets/PipeStyle3.png">
     <img id = "background" src = "imageAssets/Background.png">
 
-    <table>
+    <table id="leaderboard">
+        <caption>LEADERBOARD</caption>
         <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Score</th>
+        </tr>
+        <!-- <tr>
             <td>1</td>
             <td>Joe</td>
+            <td>33</td>
         </tr>
         <tr>
             <td>2</td>
             <td>Bro</td>
+            <td>31</td>
         </tr>
         <tr>
             <td>3</td>
             <td>Will</td>
-        </tr>
+            <td>13</td>
+        </tr> -->
     </table>
     <style>
         body
@@ -70,15 +79,16 @@
             width: 0%;
             visibility: hidden;
         }
-        td
+        td, th, caption
         {
             height: 100%;
             border: 3px solid whitesmoke;
             font-family: "Press Start 2P";
-            font-size: 1000%;
+            font-size: 200%;
         }
 
     </style>
-    <script src="indexFB.js"></script>
+    <script src="flappyBirdGame.js"></script>
+    <script src="leaderboard.js"></script>
 </body>
 </html>

@@ -17,7 +17,9 @@ app.use('/api/leaderboard', routes);
 
 mongoose.connect(process.env.MONGO_URI).then(() => {
     console.log('Connected to mongoDB');
-    app.listen(PORT, console.log(`server running on Port ${PORT}`));
+    app.listen(PORT, () => {
+        console.log(`server running on Port ${PORT}`)
+    });
 }).catch(err => {
     console.log('Error connecting to mongoDB:', err);
 })
