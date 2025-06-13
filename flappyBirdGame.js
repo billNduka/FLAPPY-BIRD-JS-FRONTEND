@@ -1,6 +1,5 @@
-//Flappy Bird game using javascript canvas
+import { addScore } from "./leaderboard.js";
 
-//Getting constants
 const canvas = document.getElementById("canv");
 const context = canvas.getContext("2d");
 const beginBtn = document.getElementById("btn")
@@ -14,6 +13,7 @@ const pipeStyle2 = document.getElementById("pipeStyle2")
 const pipeStyle3 = document.getElementById("pipeStyle3")
 const background1 = document.getElementById("background")
 const background2 = document.getElementById("background")
+let name = ""
 beginBtn.addEventListener("click", begin)
 
 
@@ -29,18 +29,13 @@ let score = 0
 let currentFaby = fabySprites[0]
 
 
-
-//bird object
 let faby = 
 {
-    //Faby's spawn position
     y: 1,
     x: canvas.width * 0.1,
     fallSpeed: 0,
-    //Faby's Size
     width: 25,
     height: 25,
-    //Update position and speed
     set updateX(change)
     {
         this.x += change
@@ -59,7 +54,6 @@ let faby =
     frameCount: 0
 }
 
-//Pipe object
 class pipes
 {
     constructor(x, height, interval, width, passed)
@@ -73,9 +67,6 @@ class pipes
     drawPipe()
     {
         context.fillStyle = "#42f560"
-        //top and bottom pipes
-        // context.fillRect(this.x, 0, this.width, canvas.height - this.height - this.interval)
-        // context.fillRect(this.x, canvas.height - this.height, this.width, this.height)   
 
         context.drawImage(pipeStyle1, this.x, 0, this.width, canvas.height - this.height - this.interval)
         context.drawImage(pipeStyle1, this.x, canvas.height - this.height, this.width, this.height)   
@@ -128,14 +119,8 @@ function initializeCanvas()
 {
     context.clearRect(0, 0, canvas.width, canvas.height)
     context.fillStyle = "rgb(52, 177, 182)"
-
-    //context.fillRect(0, 0, canvas.width, canvas.height)  
-    //context.drawImage(background1, 0, 0, canvas.width, canvas.height)
-    //background outside the canvas
-    //context.drawImage(background2, canvas.width, 0, canvas.width, canvas.height)
 }
 
-//jump function
 function jump(e)
 {
     if(((e.key == "a") || canvas.click) && isJumping == false)
@@ -150,7 +135,6 @@ function jump(e)
     }   
 }
 
-//Function to update faby's position including gravity
 function updateFaby() 
 {
     if(isJumping)
@@ -160,7 +144,7 @@ function updateFaby()
             faby.y = 0;
             isJumping = false
             faby.targetY = null
-            faby.fallSpeed = 0; // Reset fall speed when hitting the ground
+            faby.fallSpeed = 0;
         } else if (faby.y > faby.targetY)
         {
             faby.y -= faby.jumpSpeed / 3
@@ -173,42 +157,37 @@ function updateFaby()
         }
     } else if (faby.y + faby.height < canvas.height) 
     {
-        // Update fall speed incrementally
         faby.fallSpeed += gravity;
 
-        // Update position using the current fall speed
         faby.y += faby.fallSpeed;
 
-        // Prevent the bird from overshooting the bottom of the canvas
         if (faby.y + faby.height > canvas.height) 
         {
             faby.y = canvas.height - faby.height;
-            faby.fallSpeed = 0; // Reset fall speed when hitting the ground
+            faby.fallSpeed = 0;
         }
     }
 
     faby.frameCount++;
 
     if (faby.frameCount % 10 === 0) 
-    { // change 5 to a higher number to flap slower
+    { 
         faby.spriteIndex = (faby.spriteIndex + 1) % fabySprites.length;
         currentFaby = fabySprites[faby.spriteIndex];
     }
 }
 
-//Function to cause background to scroll
+
 function updateBackground()
 {
     backgroundPos[0] -= backgroundSpeed;
     backgroundPos[1] -= backgroundSpeed;
 
-    // Reset the first background when it moves out of view
     if (backgroundPos[0] <= -canvas.width) 
     {
         backgroundPos[0] = backgroundPos[1] + canvas.width;
     }
 
-    // Reset the second background when it moves out of view
     if (backgroundPos[1] <= -canvas.width) {
         backgroundPos[1] = backgroundPos[0] + canvas.width;
     }
@@ -218,21 +197,24 @@ function updateBackground()
     context.drawImage(background2, backgroundPos[1], 0, canvas.width, canvas.height)
 }
 
-//self explanatory
 function drawFaby()
 {
     context.fillStyle = "#ecf542"
-    //context.fillRect(faby.x, faby.y, faby.width, faby.height)
     context.drawImage(currentFaby, faby.x, faby.y, faby.width, faby.height)
 }
 
-//Game over screen
 function gameOverScreen()
 {
     context.fillStyle = "#ecf542"
     context.fontFamily = "Exo"
     context.font = "90px Exo"
     context.fillText("Game Over", 90, 200)
+
+    while (!name || name.length !== 3) {
+        name = prompt("Enter your name (exactly 3 characters) to save your score:", name).toUpperCase();
+        if (name === null) return; 
+    }
+    addScore(name, score);
 }
 
 function displayScore()
@@ -243,7 +225,6 @@ function displayScore()
     context.fillText(`Score: ${score}`, 10, 40)
 }
 
-//game loop; Update, draw and loop
 function begin()
 {
     let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60, false)
@@ -251,7 +232,7 @@ function begin()
     let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, 175, 60, false)
 
     faby.y = 1
-    fallSpeed = 0
+    faby.fallSpeed = 0
     faby.targetY = null
     isJumping = false
     lost = false

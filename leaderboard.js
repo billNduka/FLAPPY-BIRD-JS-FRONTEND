@@ -1,6 +1,6 @@
 const leaderboardTable = document.getElementById("leaderboard");
 
-viewUrl = "http://localhost:8000/api/leaderboard/view";
+const viewUrl = "http://localhost:8000/api/leaderboard/view";
 
 
 function addEntry(name, score){
@@ -8,12 +8,26 @@ function addEntry(name, score){
     let rankCell = document.createElement("td");
     let nameCell = document.createElement("td");
     let scoreCell = document.createElement("td");
-    rankCell.textContent = leaderboardTable.rows.length;
-    nameCell.textContent = name;
+    let currentRank = leaderboardTable.rows.length
+    rankCell.textContent = currentRank;
+    nameCell.textContent = name.toUpperCase();
     scoreCell.textContent = score;
     row.appendChild(rankCell);
     row.appendChild(nameCell);
     row.appendChild(scoreCell);
+
+    if(Number(currentRank) == 1) {
+        row.classList.add("top1");
+    } else if(Number(currentRank) <= 5){
+        row.classList.add("top5");
+    } else if(Number(currentRank) <= 10){
+        row.classList.add("top10");
+    } else if(Number(currentRank) <= 15){
+        row.classList.add("top15");
+    } else{
+        row.classList.add("rest");
+    }
+    
     leaderboardTable.appendChild(row);
 }
 
@@ -32,6 +46,17 @@ function getScores(){
   });
 }
 
+function addScore(username, score) {
+     fetch('http://localhost:8000/api/leaderboard/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, score })
+    }).then(response => response.json()).then(data => alert(data.message))
 
+}
 
 getScores();
+
+export { addScore };
