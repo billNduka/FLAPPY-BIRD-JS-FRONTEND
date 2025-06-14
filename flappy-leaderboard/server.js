@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const routes = require('./routes/leaderboardRoutes')
+const logger = require('./middleware/logger');
 
 
 dotenv.config();
@@ -12,6 +13,7 @@ const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
+app.use(logger);
 
 app.use('/api/leaderboard', routes);
 

@@ -13,7 +13,7 @@ const addScore = async (req, res) => {
         const newScore = new Score({username, score});
         await newScore.save();
         await Score.find()
-            .sort({ score: -1, submittedAt: 1 }) // Sort by score descending, then oldest first
+            .sort({ score: -1, submittedAt: 1 }) 
             .skip(30)
             .then(async (scoresToDelete) => {
                 if (scoresToDelete.length > 0) {
