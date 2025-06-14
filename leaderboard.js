@@ -1,6 +1,7 @@
 const leaderboardTable = document.getElementById("leaderboard");
 
-const viewUrl = "http://localhost:8000/api/leaderboard/view";
+const viewUrl = "https://flappy-bird-js-backend.onrender.com/api/leaderboard/view";
+const addScoreUrl = "https://flappy-bird-js-backend.onrender.com/api/leaderboard/add";
 
 
 function addEntry(name, score){
@@ -32,7 +33,7 @@ function addEntry(name, score){
 }
 
 function getScores(){
-    fetch("http://localhost:8000/api/leaderboard/view").then(response => {
+    fetch(viewUrl).then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -47,7 +48,7 @@ function getScores(){
 }
 
 function addScore(username, score) {
-     fetch('http://localhost:8000/api/leaderboard/add', {
+     fetch(addScoreUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
