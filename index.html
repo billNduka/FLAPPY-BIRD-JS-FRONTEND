@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <title id = "sup">FLAPPY BIRD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" href="imageAssets/fabySprites/faby0.png" type="image/png">
 </head>
 <body>
     <canvas id = "canv">
@@ -52,14 +54,33 @@
         body
         {
             background-color: #0069AA;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
         canvas
         {
-        border: 5px solid #000000;
-        padding: 10px solid rgb(170, 88, 88);
-        font-family: "Exo";
-        font:"90px Exo";
+            border: 5px solid #000000;
+            padding: 10px solid rgb(170, 88, 88);
+            font-family: "Exo";
+            font:"90px Exo";
+            touch-action: manipulation;
         }   
+        @media (max-width: 768px) {
+            canvas {
+                width: 95%;
+                height: 100%;
+            }
+            table
+            {
+                width: 97%;
+            }
+            td, th, caption
+            {
+                font-size: 95%;
+            }
+        }
 
         button 
         {

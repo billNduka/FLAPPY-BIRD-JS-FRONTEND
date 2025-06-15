@@ -17,7 +17,6 @@ let name = ""
 beginBtn.addEventListener("click", begin)
 
 
-//Setting the canvas size
 canvas.height = 700
 canvas.width = 600
 const gravity = 0.6
@@ -26,6 +25,7 @@ let isJumping = false
 let lost = false
 let backgroundPos = [0, canvas.width]
 let score = 0
+let highestScore = 0
 let currentFaby = fabySprites[0]
 
 
@@ -131,7 +131,6 @@ function jump(e)
         {
             faby.targetY = Math.max(faby.y - faby.jumpSpeed * 6, 0)
         }
-        console.log("fall speed = " + faby.fallSpeed, "targetY = " +faby.targetY, "Y position = " +faby.y, "Gravity = " +gravity)
     }   
 }
 
@@ -153,7 +152,6 @@ function updateFaby()
             isJumping = false
             faby.fallSpeed = 0;
             faby.targetY = null
-            console.log("fall speed = " + faby.fallSpeed, "targetY = " +faby.targetY, "Y position = " +faby.y, "Gravity = " +gravity)
         }
     } else if (faby.y + faby.height < canvas.height) 
     {
@@ -205,14 +203,21 @@ function drawFaby()
 
 function gameOverScreen()
 {
+    
     context.fillStyle = "#ecf542"
     context.fontFamily = "Exo"
     context.font = "90px Exo"
     context.fillText("Game Over", 90, 200)
 
+    if (score < highestScore) return;
     while (!name || name.length !== 3) {
-        name = prompt("Enter your name (exactly 3 characters) to save your score:", name).toUpperCase();
+        if(name == null){
+            name = prompt("Enter your name (exactly 3 characters) to save your score:");
+        } else{
+            name = prompt(`${name}`);
+        }
         if (name === null) return; 
+        name = name.toUpperCase();
     }
     addScore(name, score);
 }
