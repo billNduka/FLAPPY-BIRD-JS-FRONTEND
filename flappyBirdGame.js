@@ -26,6 +26,7 @@ let lost = false
 let backgroundPos = [0, canvas.width]
 let score = 0
 let highestScore = 0
+let firstGame = true
 let currentFaby = fabySprites[0]
 
 
@@ -96,8 +97,6 @@ class pipes
         ) 
         {
             lost = true
-            //alert("Game Over");
-            //location.reload(); // Reload to restart the game
         }
     }
     updateScore()
@@ -208,8 +207,11 @@ function gameOverScreen()
     context.fontFamily = "Exo"
     context.font = "90px Exo"
     context.fillText("Game Over", 90, 200)
+    
+    
 
     if (score < highestScore) return;
+    highestScore = score;
     while (!name || name.length !== 3) {
         if(name == null){
             name = prompt("Enter your name (exactly 3 characters) to save your score:");
@@ -218,8 +220,11 @@ function gameOverScreen()
         }
         if (name === null) return; 
         name = name.toUpperCase();
+        
+        addScore(name, score);
     }
-    addScore(name, score);
+    
+    
 }
 
 function displayScore()
