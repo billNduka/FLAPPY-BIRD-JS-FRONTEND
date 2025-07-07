@@ -14,6 +14,7 @@ const pipeStyle3 = document.getElementById("pipeStyle3")
 const background1 = document.getElementById("background")
 const background2 = document.getElementById("background")
 let name = ""
+let savedName = ""
 beginBtn.addEventListener("click", begin)
 
 
@@ -210,20 +211,24 @@ function gameOverScreen()
     
     
 
-    if (score < highestScore) return;
+    if (score < highestScore) {
+        return;
+    }
     highestScore = score;
     while (!name || name.length !== 3) {
         if(name == null){
-            name = prompt("Enter your name (exactly 3 characters) to save your score:");
+            name = prompt("Enter your name (exactly 3 characters) to save your score:", `${savedName}`);
         } else{
-            name = prompt(`${name}`);
+            name = prompt();
         }
-        if (name === null) return; 
+        //if (name === null) return; 
         name = name.toUpperCase();
         
         addScore(name, score);
+
     }
-    
+    savedName = name;
+    name = null;
     
 }
 
