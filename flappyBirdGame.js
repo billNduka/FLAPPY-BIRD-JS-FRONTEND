@@ -1,5 +1,12 @@
 import { addScore } from "./leaderboard.js";
 
+const isMobile = window.innerWidth < 800 || /Mobi|Android/i.test(navigator.userAgent);
+function percentWidth(p) {
+    return canvas.width * (p / 100);
+}
+function percentHeight(p) {
+    return canvas.height * (p / 100);
+}
 const canvas = document.getElementById("canv");
 const context = canvas.getContext("2d");
 const beginBtn = document.getElementById("btn")
@@ -15,6 +22,7 @@ const background1 = document.getElementById("background")
 const background2 = document.getElementById("background")
 let name = ""
 let savedName = ""
+
 beginBtn.addEventListener("click", begin)
 
 
@@ -36,8 +44,8 @@ let faby =
     y: 1,
     x: canvas.width * 0.1,
     fallSpeed: 0,
-    width: 25,
-    height: 25,
+    width: isMobile ? percentWidth(7):25,
+    height: isMobile ? percentWidth(7):25,
     set updateX(change)
     {
         this.x += change
@@ -50,7 +58,7 @@ let faby =
     {
         this.fallSpeed += change
     },
-    jumpSpeed: 12,  
+    jumpSpeed: isMobile ? percentWidth(2.5): 12,  
     targetY: null,
     spriteIndex: 0,
     frameCount: 0
@@ -240,11 +248,13 @@ function displayScore()
     context.fillText(`Score: ${score}`, 10, 40)
 }
 
+let pipeGap = isMobile ? percentHeight(35) : 175;
+
 function begin()
 {
-    let pipe1 = new pipes(605, Math.random() * 350 + 205, 175, 60, false)
-    let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, 175, 60, false)
-    let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, 175, 60, false)
+    let pipe1 = new pipes(605, Math.random() * 350 + 205, pipeGap, 60, false)
+    let pipe2 = new pipes(605 + 250, Math.random() * 350 + 200, pipeGap, 60, false)
+    let pipe3 = new pipes(605 + 250 + 250, Math.random() * 350 + 200, pipeGap, 60, false)
 
     faby.y = 1
     faby.fallSpeed = 0
